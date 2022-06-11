@@ -21,7 +21,7 @@ class BookingFactory extends Factory
             'user_id'          => $this->faker->numberBetween(1, 5),
             'freezing_room_id' => $this->faker->unique()->numberBetween(1, 54),
             'blocks'           => $this->faker->numberBetween(10, 50),
-            'storage_period'   => $this->faker->dateTimeBetween('-10 days', '4 days'),
+            'storage_period'   => $this->faker->dateTimeBetween('-10 days', '10 days'),
             'cost'             => $this->faker->numberBetween(10000, 100000),
             'token'            => Str::random(12),
         ];

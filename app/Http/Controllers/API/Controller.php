@@ -13,8 +13,16 @@ use OpenApi\Annotations as OA;
  *     )
  * )
  * @OA\Tag(
- *     name="Test",
- *     description="Simple test"
+ *     name="Locations",
+ *     description="Locations where there are freezing rooms."
+ * )
+ * @OA\Tag(
+ *     name="Calculator",
+ *     description="Calculate booking details"
+ * )
+ * @OA\Tag(
+ *     name="Booking",
+ *     description="Storage blocks booking."
  * )
  * @OA\Server (
  *     description="Fridge Master API server",

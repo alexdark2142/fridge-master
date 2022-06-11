@@ -12,33 +12,99 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use OpenApi\Annotations as OA;
 use Symfony\Component\HttpFoundation\Response as ResponseAlias;
 
 class BookingController extends Controller
 {
+    /**
+     * @OA\Get(
+     *      path="/user/{userId}/booking",
+     *      operationId="getBookingList",
+     *      tags={"Booking"},
+     *      summary="Get a list of booking for a user",
+     *      description="Returns a list of booking for the user",
+     *      @OA\Parameter(
+     *          name="userId",
+     *          in="path",
+     *          description="User ID",
+     *          required=true,
+     *          @OA\Schema(
+     *              type="integer"
+     *          )
+     *      ),
+     *      @OA\Response(
+     *          response=200,
+     *          description="Successful operation",
+     *          @OA\JsonContent(
+     *              type="array",
+     *              @OA\Items(ref="#/components/schemas/Booking")
+     *          )
+     *      ),
+     *      @OA\Response(
+     *          response=404,
+     *          description="Booking not found"
+     *       )
+     * )
+     */
     public function list(int $userId): JsonResource
     {
         return BookingResource::collection(Booking::whereUserId($userId)->get());
     }
 
-    public function store(BookingRequest $request): JsonResponse
+    /**
+     * @OA\Post(
+     *      path="/user/{userId}/booking",
+     *      operationId="storeBooking",
+     *      tags={"Booking"},
+     *      summary="Create a booking",
+     *      description="Returns message successes",
+     *      @OA\Parameter(
+     *          name="userId",
+     *          in="path",
+     *          description="User ID",
+     *          required=true,
+     *          @OA\Schema(
+     *              type="integer"
+     *          )
+     *      ),
+     *      @OA\RequestBody(
+     *          required=true,
+     *          @OA\JsonContent(ref="#/components/schemas/StoreBookingRequest")
+     *      ),
+     *      @OA\Response(
+     *          response=201,
+     *          description="Successful operation"
+     *       ),
+     *      @OA\Response(
+     *          response=422,
+     *          description="Unprocessable Content"
+     *      )
+     * )
+     */
+    public function store(BookingRequest $request, int $userId): JsonResponse
     {
         if (isset($request->validator) && $request->validator->fails()) {
-            return $request->validator->errors()->toJson();
-        }
-
-        if ($request->get('total_free_blocks') < $totalBlocks = $request->get('need_total_blocks')) {
             return response()->json(
                 [
-                    'error' => [
-                        'message' => 'Not enough blocks to book. Reduce the volume of goods.'
-                    ]
+                    'errors' => $request->validator->errors()
                 ],
-                ResponseAlias::HTTP_BAD_REQUEST
+                ResponseAlias::HTTP_UNPROCESSABLE_ENTITY
             );
         }
 
-        DB::transaction(function () use ($request, $totalBlocks) {
+        if ($request->get('total_free_blocks') < $totalBlocks = $request->get('required_blocks')) {
+            return response()->json(
+                [
+                    'errors' => [
+                        'message' => 'Not enough blocks to book. Reduce the volume of goods.'
+                    ]
+                ],
+                ResponseAlias::HTTP_UNPROCESSABLE_ENTITY
+            );
+        }
+
+        DB::transaction(function () use ($request, $totalBlocks, $userId) {
             foreach ($request->get('freezing_rooms') as $freezingRoom) {
                 $date = Carbon::now()
                     ->tz(FreezingRoom::findOrFail($freezingRoom['id'])->location->timezone)
@@ -53,16 +119,16 @@ class BookingController extends Controller
                 }
 
                 Booking::create([
-                    'user_id'          => $request->get('user_id'),
+                    'user_id' => $userId,
                     'freezing_room_id' => $freezingRoom['id'],
-                    'blocks'           => $blocks,
-                    'storage_period'   => $date,
-                    'cost'             => $request->get('cost'),
-                    'cod'              => Str::random(12)
+                    'blocks' => $blocks,
+                    'storage_period' => $date,
+                    'cost' => $request->get('cost'),
+                    'token' => Str::random(12)
                 ]);
             }
         });
 
-        return response()->json('successes', ResponseAlias::HTTP_CREATED);
+        return response()->json(['message' => 'successes'], ResponseAlias::HTTP_CREATED);
     }
 }

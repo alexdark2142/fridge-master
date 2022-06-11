@@ -14,22 +14,383 @@
         }
     ],
     "paths": {
-        "/": {
+        "/user/{userId}/booking": {
             "get": {
-                "description": "Home page",
-                "operationId": "b8debbae20cfdb70b56d2c03f1de408a",
+                "tags": [
+                    "Booking"
+                ],
+                "summary": "Get a list of booking for a user",
+                "description": "Returns a list of booking for the user",
+                "operationId": "getBookingList",
+                "parameters": [
+                    {
+                        "name": "userId",
+                        "in": "path",
+                        "description": "User ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
                 "responses": {
-                    "default": {
-                        "description": "Welcome page"
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Booking"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Booking not found"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Booking"
+                ],
+                "summary": "Create a booking",
+                "description": "Returns message successes",
+                "operationId": "storeBooking",
+                "parameters": [
+                    {
+                        "name": "userId",
+                        "in": "path",
+                        "description": "User ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/StoreBookingRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Successful operation"
+                    },
+                    "422": {
+                        "description": "Unprocessable Content"
+                    }
+                }
+            }
+        },
+        "/locations": {
+            "get": {
+                "tags": [
+                    "Locations"
+                ],
+                "summary": "Get a list of locations",
+                "description": "Returns a list of locations",
+                "operationId": "getLocationsList",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Location"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/locations/{id}": {
+            "get": {
+                "tags": [
+                    "Locations"
+                ],
+                "summary": "Get location information",
+                "description": "Returns location data",
+                "operationId": "getLocationsById",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Location id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Location"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid ID supplied"
+                    },
+                    "404": {
+                        "description": "Location not found"
+                    }
+                }
+            }
+        },
+        "/locations/{id}/calculator": {
+            "post": {
+                "tags": [
+                    "Calculator"
+                ],
+                "summary": "Block Booking Calculator",
+                "description": "Returns estimated data",
+                "operationId": "calculator",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Location id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CalculatorRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Successful operation"
+                    },
+                    "422": {
+                        "description": "Incorect data"
                     }
                 }
             }
         }
     },
+    "components": {
+        "schemas": {
+            "Booking": {
+                "title": "Booking resource",
+                "description": "Booking list for user",
+                "properties": {
+                    "id": {
+                        "title": "ID",
+                        "description": "ID",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 3
+                    },
+                    "location_name": {
+                        "title": "Location name",
+                        "description": "Location name",
+                        "type": "string",
+                        "example": "Toronto"
+                    },
+                    "freezing_room": {
+                        "title": "Freezing room",
+                        "description": "Freezing room info",
+                        "type": "object",
+                        "example": {
+                            "id": 36,
+                            "name": "Room48",
+                            "temperature": -32
+                        }
+                    },
+                    "blocks": {
+                        "title": "Nnumber of blocks",
+                        "description": "Location name",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": "35"
+                    },
+                    "cost": {
+                        "title": "cost",
+                        "description": "Price for storage of goods",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 18960
+                    },
+                    "storage_period": {
+                        "title": "storage_period",
+                        "description": "Products storage period",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 12
+                    },
+                    "date_booking_by_tz": {
+                        "title": "Booking date",
+                        "description": "Booking date according to location time zone",
+                        "type": "string",
+                        "format": "datetime",
+                        "default": "2022-06-25 18:31:45"
+                    },
+                    "token": {
+                        "title": "token",
+                        "description": "Token for receiving goods",
+                        "type": "string",
+                        "example": "5zruiiV1mFtp"
+                    }
+                },
+                "type": "object"
+            },
+            "CalculatorRequest": {
+                "title": "Calculator request",
+                "description": "Calculator request body data",
+                "required": [
+                    "goods_volume",
+                    "temperature",
+                    "storage_period"
+                ],
+                "properties": {
+                    "goods_volume": {
+                        "title": "goods_volume",
+                        "description": "Мolume of goods",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 158
+                    },
+                    "temperature": {
+                        "title": "temperature",
+                        "description": "Temperature freezing room",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": -10
+                    },
+                    "storage_period": {
+                        "title": "storage_period",
+                        "description": "Products storage period",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 12
+                    }
+                },
+                "type": "object"
+            },
+            "Location": {
+                "title": "Location resource",
+                "description": "Location info",
+                "properties": {
+                    "id": {
+                        "title": "ID",
+                        "description": "ID",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 3
+                    },
+                    "name": {
+                        "title": "Location name",
+                        "description": "Location name",
+                        "type": "string",
+                        "example": "Toronto"
+                    },
+                    "total_free_blocks": {
+                        "title": "Total number of free blocks",
+                        "description": "Total number of free blocks",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": "450"
+                    }
+                },
+                "type": "object"
+            },
+            "StoreBookingRequest": {
+                "title": "Store booking request",
+                "description": "Store booking request body data",
+                "required": [
+                    "total_free_blocks",
+                    "required_blocks",
+                    "freezing_rooms",
+                    "storage_period",
+                    "cost"
+                ],
+                "properties": {
+                    "total_free_blocks": {
+                        "title": "total_free_blocks",
+                        "description": "Total number of free blocks",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 100
+                    },
+                    "required_blocks": {
+                        "title": "required_blocks",
+                        "description": "Required number of  blocks",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 68
+                    },
+                    "freezing_rooms": {
+                        "title": "freezing_rooms",
+                        "description": "list of suitable freezing rooms",
+                        "type": "object",
+                        "example": [
+                            {
+                                "id": 3,
+                                "free_blocks": 50
+                            },
+                            {
+                                "id": 4,
+                                "free_blocks": 50
+                            }
+                        ]
+                    },
+                    "storage_period": {
+                        "title": "storage_period",
+                        "description": "Products storage period",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 12
+                    },
+                    "cost": {
+                        "title": "cost",
+                        "description": "Price for storage of goods",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 18960
+                    }
+                },
+                "type": "object"
+            }
+        }
+    },
     "tags": [
         {
-            "name": "Test",
-            "description": "Simple test"
+            "name": "Locations",
+            "description": "Locations where there are freezing rooms."
+        },
+        {
+            "name": "Calculator",
+            "description": "Calculate booking details"
+        },
+        {
+            "name": "Booking",
+            "description": "Storage blocks booking."
         }
     ]
 }

@@ -37,7 +37,7 @@ class BookingRequest extends FormRequest
     {
         return [
             'total_free_blocks' => 'required|int',
-            'need_total_blocks' => 'required|int',
+            'required_blocks'   => 'required|int',
             'freezing_rooms'    => 'required|array',
             'storage_period'    => 'required|int|between:1,24',
             'cost'              => 'required|int',

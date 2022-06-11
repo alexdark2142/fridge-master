@@ -36,7 +36,7 @@ class LocationResource extends JsonResource
             'location_name'     => $this->name,
             'freezing_rooms'    => FreezingRoomResource::collection($this->freezingRooms),
             'total_free_blocks' => $this->freezing_rooms_sum_total_blocks - $bookingBlocks,
-            'need_total_blocks' => $blocks,
+            'required_blocks' => $blocks,
             'cost'              => $blocks * $request->get('storage_period') * FreezingRoom::COST_BLOCK_PER_DAY,
         ];
     }

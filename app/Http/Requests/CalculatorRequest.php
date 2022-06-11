@@ -5,7 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 
-class CalculationRequest extends FormRequest
+class CalculatorRequest extends FormRequest
 {
     /** @var null  */
     public $validator = null;

@@ -23,9 +23,9 @@ class FreezingRoomSeeder extends Seeder
             $item = 0;
             foreach ($temperatures as $temperature) {
                 $FreezingRoom::create([
-                    'name' => "Room_$location->id" . $item++,
-                    'location_id' => $location->id,
-                    'temperature' => $temperature,
+                    'name'         => "Room_$location->id" . $item++,
+                    'location_id'  => $location->id,
+                    'temperature'  => $temperature,
                     'total_blocks' => 50,
                 ]);
             }

@@ -23,10 +23,10 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::prefix('locations')->group(function () {
     Route::get('/', [LocationController::class, 'index']);
     Route::get('/{id}', [LocationController::class, 'show']);
-    Route::post('/{id}', [LocationController::class, 'calculation']);
+    Route::post('/{id}/calculator', [LocationController::class, 'calculator']);
 });
 
 Route::prefix('user')->group(function () {
-    Route::get('/{userId}/bookings', [BookingController::class, 'list']);
-    Route::post('/{userId}/bookings', [BookingController::class, 'store']);
+    Route::get('/{userId}/booking', [BookingController::class, 'list']);
+    Route::post('/{userId}/booking', [BookingController::class, 'store']);
 });
