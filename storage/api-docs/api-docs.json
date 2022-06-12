@@ -31,6 +31,14 @@
                         "schema": {
                             "type": "integer"
                         }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number",
+                        "schema": {
+                            "type": "integer"
+                        }
                     }
                 ],
                 "responses": {
@@ -86,6 +94,42 @@
                     },
                     "422": {
                         "description": "Unprocessable Content"
+                    }
+                }
+            }
+        },
+        "/booking/{id}/token": {
+            "get": {
+                "tags": [
+                    "Booking"
+                ],
+                "summary": "Token for delivery or receipt of goods",
+                "description": "Return token",
+                "operationId": "getToken",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Booking ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Token"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Booking not found"
                     }
                 }
             }
@@ -257,12 +301,6 @@
                         "type": "string",
                         "format": "datetime",
                         "default": "2022-06-25 18:31:45"
-                    },
-                    "token": {
-                        "title": "Token",
-                        "description": "Token for receiving goods",
-                        "type": "string",
-                        "example": "5zruiiV1mFtp"
                     }
                 },
                 "type": "object"
@@ -448,6 +486,19 @@
                         "type": "integer",
                         "format": "int64",
                         "example": 18960
+                    }
+                },
+                "type": "object"
+            },
+            "Token": {
+                "title": "Token",
+                "description": "Booking Token",
+                "properties": {
+                    "token": {
+                        "title": "Token",
+                        "description": "Token for receiving goods",
+                        "type": "string",
+                        "example": "5zruiiV1mFtp"
                     }
                 },
                 "type": "object"

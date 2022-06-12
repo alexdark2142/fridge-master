@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 /**
  * @method static create(array $array)
  * @method static whereUserId(int $userId)
+ * @method static findOrFail(int $id)
  */
 class Booking extends Model
 {

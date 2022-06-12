@@ -101,15 +101,4 @@ class Booking
      * @var \DateTime
      */
     public \DateTime $date_booking_by_tz;
-
-    /**
-     * @OA\Property(
-     *      title="Token",
-     *      description="Token for receiving goods",
-     *      example="5zruiiV1mFtp"
-     * )
-     *
-     * @var string
-     */
-    public string $token;
 }

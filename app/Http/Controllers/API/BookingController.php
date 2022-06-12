@@ -30,6 +30,14 @@ class BookingController extends Controller
      *              type="integer"
      *          )
      *      ),
+     *      @OA\Parameter(
+     *          name="page",
+     *          in="query",
+     *          description="Page number",
+     *          @OA\Schema(
+     *              type="integer"
+     *          )
+     *      ),
      *      @OA\Response(
      *          response=200,
      *          description="Successful operation",
@@ -46,7 +54,39 @@ class BookingController extends Controller
      */
     public function list(int $userId): JsonResource
     {
-        return BookingResource::collection(Booking::whereUserId($userId)->get());
+        return BookingResource::collection(Booking::whereUserId($userId)->paginate(5));
+    }
+
+    /**
+     * @OA\Get(
+     *      path="/booking/{id}/token",
+     *      operationId="getToken",
+     *      tags={"Booking"},
+     *      summary="Token for delivery or receipt of goods",
+     *      description="Return token",
+     *      @OA\Parameter(
+     *          name="id",
+     *          in="path",
+     *          description="Booking ID",
+     *          required=true,
+     *          @OA\Schema(
+     *              type="integer"
+     *          )
+     *      ),
+     *      @OA\Response(
+     *          response=200,
+     *          description="Successful operation",
+     *          @OA\JsonContent(ref="#/components/schemas/Token")
+     *      ),
+     *      @OA\Response(
+     *          response=404,
+     *          description="Booking not found"
+     *       )
+     * )
+     */
+    public function getToken(int $id): JsonResponse
+    {
+        return response()->json(['token' => Booking::findOrFail($id)->token]);
     }
 
     /**

@@ -40,7 +40,6 @@ class BookingResource extends JsonResource
             'cost'               => $this->cost,
             'storage_period'     => $storagePeriod,
             'date_booking_by_tz' => $this->storage_period,
-            'token'              => $this->token,
         ];
     }
 }

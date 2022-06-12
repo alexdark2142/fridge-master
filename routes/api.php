@@ -30,3 +30,5 @@ Route::prefix('user')->group(function () {
     Route::get('/{userId}/booking', [BookingController::class, 'list']);
     Route::post('/{userId}/booking', [BookingController::class, 'store']);
 });
+
+Route::get('booking/{id}/token', [BookingController::class, 'getToken']);
