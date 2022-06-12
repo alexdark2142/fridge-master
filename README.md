@@ -17,5 +17,6 @@
   ```shell
   $ ./vendor/bin/sail bush
   $ composer install
+  $ cp .env.example .env
   $ php artisan migrate --seed 
   ```
