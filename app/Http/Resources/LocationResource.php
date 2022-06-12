@@ -14,6 +14,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
  * @property mixed $freezingRooms
  * @property mixed $freezing_rooms_sum_total_blocks
  * @property mixed $dateByTZ
+ * @property mixed $timezone
  */
 class LocationResource extends JsonResource
 {
@@ -34,9 +35,10 @@ class LocationResource extends JsonResource
         return [
             'location_id'       => $this->id,
             'location_name'     => $this->name,
+            'location_tz'       => $this->timezone,
             'freezing_rooms'    => FreezingRoomResource::collection($this->freezingRooms),
             'total_free_blocks' => $this->freezing_rooms_sum_total_blocks - $bookingBlocks,
-            'required_blocks' => $blocks,
+            'required_blocks'   => $blocks,
             'cost'              => $blocks * $request->get('storage_period') * FreezingRoom::COST_BLOCK_PER_DAY,
         ];
     }

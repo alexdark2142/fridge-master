@@ -6,55 +6,47 @@ use OpenApi\Annotations as OA;
 
 /**
  * @OA\Schema(
- *      title="Store booking request",
- *      description="Store booking request body data",
- *      type="object",
- *      required={
- *          "total_free_blocks",
- *          "required_blocks",
- *          "freezing_rooms",
- *          "storage_period",
- *          "cost"
- *      }
+ *      title="Booking calculations",
+ *      description="Booking data calculations",
+ *      type="object"
  * )
  */
 
-class StoreBookingRequest
+class Calculation
 {
     /**
      * @OA\Property(
-     *      title="Total number of free blocks",
-     *      description="Total number of free blocks",
+     *      title="Location ID",
+     *      description="Location ID",
      *      format="int64",
-     *      example=100
+     *      example=3
      * )
      *
      * @var integer
      */
-    public int $total_free_blocks;
+    public int $location_id;
 
     /**
      * @OA\Property(
-     *      title="Required blocks",
-     *      description="Required number of  blocks",
-     *      format="int64",
-     *      example=68
+     *      title="Location name",
+     *      description="Location name",
+     *      example="Toronto"
      * )
      *
      * @var integer
      */
-    public int $required_blocks;
+    public int $location_name;
 
     /**
      * @OA\Property(
-     *      title="Timezone",
+     *      title="Location timezone",
      *      description="Location timezone",
      *      example="America/Toronto"
      * )
      *
-     * @var string
+     * @var integer
      */
-    public string $location_tz;
+    public int $location_tz;
 
     /**
      * @OA\Property(
@@ -78,15 +70,27 @@ class StoreBookingRequest
 
     /**
      * @OA\Property(
-     *      title="Storage period",
-     *      description="Products storage period",
+     *      title="Total number of free blocks",
+     *      description="Total number of free blocks",
      *      format="int64",
-     *      example=12
+     *      example=100
      * )
      *
      * @var integer
      */
-    public int $storage_period;
+    public int $total_free_blocks;
+
+    /**
+     * @OA\Property(
+     *      title="Required blocks",
+     *      description="Required number of  blocks",
+     *      format="int64",
+     *      example=68
+     * )
+     *
+     * @var integer
+     */
+    public int $required_blocks;
 
     /**
      * @OA\Property(

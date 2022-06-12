@@ -10,6 +10,7 @@ use OpenApi\Annotations as OA;
  * @OA\Schema(
  *     title="Location resource",
  *     description="Location info",
+ *     type="object"
  * )
  */
 class Location

@@ -10,6 +10,7 @@ use OpenApi\Annotations as OA;
  * @OA\Schema(
  *     title="Booking resource",
  *     description="Booking list for user",
+ *     type="object"
  * )
  */
 class Booking

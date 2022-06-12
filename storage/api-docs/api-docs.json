@@ -185,7 +185,14 @@
                 },
                 "responses": {
                     "201": {
-                        "description": "Successful operation"
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Calculation"
+                                }
+                            }
+                        }
                     },
                     "422": {
                         "description": "Incorect data"
@@ -224,21 +231,21 @@
                         }
                     },
                     "blocks": {
-                        "title": "Nnumber of blocks",
-                        "description": "Location name",
+                        "title": "Blocks",
+                        "description": "Booking of the number of blocks",
                         "type": "integer",
                         "format": "int64",
                         "example": "35"
                     },
                     "cost": {
-                        "title": "cost",
+                        "title": "Cost",
                         "description": "Price for storage of goods",
                         "type": "integer",
                         "format": "int64",
                         "example": 18960
                     },
                     "storage_period": {
-                        "title": "storage_period",
+                        "title": "Storage period",
                         "description": "Products storage period",
                         "type": "integer",
                         "format": "int64",
@@ -252,10 +259,72 @@
                         "default": "2022-06-25 18:31:45"
                     },
                     "token": {
-                        "title": "token",
+                        "title": "Token",
                         "description": "Token for receiving goods",
                         "type": "string",
                         "example": "5zruiiV1mFtp"
+                    }
+                },
+                "type": "object"
+            },
+            "Calculation": {
+                "title": "Booking calculations",
+                "description": "Booking data calculations",
+                "properties": {
+                    "location_id": {
+                        "title": "Location ID",
+                        "description": "Location ID",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 3
+                    },
+                    "location_name": {
+                        "title": "Location name",
+                        "description": "Location name",
+                        "type": "integer",
+                        "example": "Toronto"
+                    },
+                    "location_tz": {
+                        "title": "Location timezone",
+                        "description": "Location timezone",
+                        "type": "integer",
+                        "example": "America/Toronto"
+                    },
+                    "freezing_rooms": {
+                        "title": "Freezing rooms",
+                        "description": "list of suitable freezing rooms",
+                        "type": "object",
+                        "example": [
+                            {
+                                "id": 3,
+                                "free_blocks": 50
+                            },
+                            {
+                                "id": 4,
+                                "free_blocks": 50
+                            }
+                        ]
+                    },
+                    "total_free_blocks": {
+                        "title": "Total number of free blocks",
+                        "description": "Total number of free blocks",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 100
+                    },
+                    "required_blocks": {
+                        "title": "Required blocks",
+                        "description": "Required number of  blocks",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 68
+                    },
+                    "cost": {
+                        "title": "Cost",
+                        "description": "Price for storage of goods",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 18960
                     }
                 },
                 "type": "object"
@@ -270,21 +339,21 @@
                 ],
                 "properties": {
                     "goods_volume": {
-                        "title": "goods_volume",
-                        "description": "Мolume of goods",
+                        "title": "Volume of goods",
+                        "description": "Volume of goods",
                         "type": "integer",
                         "format": "int64",
                         "example": 158
                     },
                     "temperature": {
-                        "title": "temperature",
+                        "title": "Temperature",
                         "description": "Temperature freezing room",
                         "type": "integer",
                         "format": "int64",
                         "example": -10
                     },
                     "storage_period": {
-                        "title": "storage_period",
+                        "title": "Storage period",
                         "description": "Products storage period",
                         "type": "integer",
                         "format": "int64",
@@ -332,21 +401,27 @@
                 ],
                 "properties": {
                     "total_free_blocks": {
-                        "title": "total_free_blocks",
+                        "title": "Total number of free blocks",
                         "description": "Total number of free blocks",
                         "type": "integer",
                         "format": "int64",
                         "example": 100
                     },
                     "required_blocks": {
-                        "title": "required_blocks",
+                        "title": "Required blocks",
                         "description": "Required number of  blocks",
                         "type": "integer",
                         "format": "int64",
                         "example": 68
                     },
+                    "location_tz": {
+                        "title": "Timezone",
+                        "description": "Location timezone",
+                        "type": "string",
+                        "example": "America/Toronto"
+                    },
                     "freezing_rooms": {
-                        "title": "freezing_rooms",
+                        "title": "Freezing rooms",
                         "description": "list of suitable freezing rooms",
                         "type": "object",
                         "example": [
@@ -361,14 +436,14 @@
                         ]
                     },
                     "storage_period": {
-                        "title": "storage_period",
+                        "title": "Storage period",
                         "description": "Products storage period",
                         "type": "integer",
                         "format": "int64",
                         "example": 12
                     },
                     "cost": {
-                        "title": "cost",
+                        "title": "Cost",
                         "description": "Price for storage of goods",
                         "type": "integer",
                         "format": "int64",

@@ -6,12 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\BookingRequest;
 use App\Http\Resources\BookingResource;
 use App\Models\Booking;
-use App\Models\FreezingRoom;
-use Carbon\Carbon;
+use App\Services\BookingService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
 use OpenApi\Annotations as OA;
 use Symfony\Component\HttpFoundation\Response as ResponseAlias;
 
@@ -82,7 +79,7 @@ class BookingController extends Controller
      *      )
      * )
      */
-    public function store(BookingRequest $request, int $userId): JsonResponse
+    public function store(BookingRequest $request, BookingService $bookingService, int $userId): JsonResponse
     {
         if (isset($request->validator) && $request->validator->fails()) {
             return response()->json(
@@ -93,7 +90,7 @@ class BookingController extends Controller
             );
         }
 
-        if ($request->get('total_free_blocks') < $totalBlocks = $request->get('required_blocks')) {
+        if ($request->get('total_free_blocks') < $request->get('required_blocks')) {
             return response()->json(
                 [
                     'errors' => [
@@ -104,30 +101,7 @@ class BookingController extends Controller
             );
         }
 
-        DB::transaction(function () use ($request, $totalBlocks, $userId) {
-            foreach ($request->get('freezing_rooms') as $freezingRoom) {
-                $date = Carbon::now()
-                    ->tz(FreezingRoom::findOrFail($freezingRoom['id'])->location->timezone)
-                    ->addDays($request->get('storage_period'))
-                    ->format('Y-m-d H:i:s');
-
-                if ($freezingRoom['free_blocks'] > $totalBlocks) {
-                    $blocks = $totalBlocks;
-                } else {
-                    $blocks = $freezingRoom['free_blocks'];
-                    $totalBlocks = $totalBlocks - $freezingRoom['free_blocks'];
-                }
-
-                Booking::create([
-                    'user_id' => $userId,
-                    'freezing_room_id' => $freezingRoom['id'],
-                    'blocks' => $blocks,
-                    'storage_period' => $date,
-                    'cost' => $request->get('cost'),
-                    'token' => Str::random(12)
-                ]);
-            }
-        });
+        $bookingService->store($request, $userId);
 
         return response()->json(['message' => 'successes'], ResponseAlias::HTTP_CREATED);
     }

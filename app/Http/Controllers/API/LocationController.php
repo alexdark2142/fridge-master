@@ -7,6 +7,7 @@ use App\Http\Requests\CalculatorRequest;
 use App\Http\Resources\LocationResource;
 use App\Http\Resources\LocationSimpleResource;
 use App\Models\Location;
+use App\Services\CalculatorService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\JsonResource;
 use OpenApi\Annotations as OA;
@@ -95,6 +96,7 @@ class LocationController extends Controller
      *      @OA\Response(
      *          response=201,
      *          description="Successful operation",
+     *          @OA\JsonContent(ref="#/components/schemas/Calculation")
      *       ),
      *      @OA\Response(
      *          response=422,
@@ -102,8 +104,11 @@ class LocationController extends Controller
      *      )
      * )
      */
-    public function calculator(CalculatorRequest $request, int $id): LocationResource|JsonResponse
-    {
+    public function calculator(
+        CalculatorRequest $request,
+        CalculatorService $locationService,
+        int $id
+    ): LocationResource|JsonResponse {
         if (isset($request->validator) && $request->validator->fails()) {
             return response()->json(
                 [
@@ -113,30 +118,6 @@ class LocationController extends Controller
             );
         }
 
-        $temperatures = $this->getTemperatures($request->get('temperature'));
-
-        $location = Location::with([
-            'freezingRooms' => function ($q) use ($temperatures) {
-                $q->whereBetween('temperature', $temperatures);
-            }
-        ])
-            ->withSum(
-                [
-                    'freezingRooms' => function ($q) use ($temperatures) {
-                        $q->whereBetween('temperature', $temperatures);
-                    }
-                ],
-                'total_blocks'
-            )
-            ->findOrFail($id);
-
-        return new LocationResource($location);
-    }
-
-    private function getTemperatures($temperature): array
-    {
-        return $temperature !== null
-            ? [$temperature - 2, $temperature + 2]
-            : [];
+        return new LocationResource($locationService->calculation($id, $request->get('temperature')));
     }
 }
